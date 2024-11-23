@@ -4,35 +4,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kart Məlumatlarını Daxil Et</title>
-  <link rel="stylesheet" href="assets/css/card.css"> <!-- CSS Faylını əlavə et -->
+  <title>Bank Card</title>
+  <link rel="stylesheet" href="assets/css/card.css">
+  <script defer src="./assets/js/card.js"></script>
+  <script defer src="./assets/js/server.js"></script>
 </head>
 
 <body>
-
-  <section>
-    <h1>Kart Məlumatlarını Daxil Et</h1>
-
-    <!-- Kart məlumatları daxil etmək üçün form -->
+  <div>
+    <h1>Card Details</h1>
     <form id="cardForm">
-      <label for="cardHolder">Kart Sahibinin Adı:</label>
-      <input type="text" id="cardHolder" required placeholder="Kart Sahibinin Adı" /><br><br>
-
-      <label for="cardNumber">Kart Nömrəsi:</label>
-      <input type="text" id="cardNumber" required placeholder="Kart Nömrəsi (16 simvol)" maxlength="19" /><br><br>
-
-      <label for="expiryDate">Son İstifadə Tarixi:</label>
-      <input type="text" id="expiryDate" required placeholder="MM/YY" maxlength="5" pattern="\d{2}/\d{2}" /><br><br>
-
-      <label for="cvv">CVV:</label>
-      <input type="text" id="cvv" required placeholder="CVV" maxlength="3" /><br><br>
-
-      <button type="submit">Kart Məlumatlarını Göndər</button>
+      <input type="text" id="cardHolder" placeholder="Card Holder" required>
+      <input type="text" id="cardNumber" placeholder="Card Number" maxlength="19" required>
+      <input type="text" id="expiryDate" placeholder="Expiry Date (MM/YY)" maxlength="5" required>
+      <input type="text" id="cvv" placeholder="CVV" maxlength="3" required>
+      <button type="submit">Submit</button>
     </form>
+    <div id="cardPreview" style="display:none;">
+      <h2>Card Preview</h2>
+      <p><strong>Card Holder:</strong> <span id="cardHolderDisplay"></span></p>
+      <p><strong>Card Number:</strong> <span id="cardNumberDisplay"></span></p>
+      <p><strong>Expiry Date:</strong> <span id="expiryDateDisplay"></span></p>
+      <p><strong>CVV:</strong> <span id="cvvDisplay"></span></p>
+    </div>
+  </div>
 
-  </section>
-  <script defer src="./assets/js/card.js"></script> <!-- JavaScript Faylını əlavə et -->
+  <script>
+    document.getElementById("cardForm").addEventListener("submit", function (event) {
+      event.preventDefault();
 
+      const cardData = {
+        cardHolder: document.getElementById("cardHolder").value,
+        cardNumber: document.getElementById("cardNumber").value,
+        expiryDate: document.getElementById("expiryDate").value,
+        cvv: document.getElementById("cvv").value
+      };
+
+      // Send data to the backend API
+      fetch('http://localhost:5000/api/cards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cardData)
+      })
+        .then(response => response.json())
+        .then(data => {
+          alert("Card data saved!");
+          displayCardData(cardData); // Display the card data
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    function displayCardData(cardData) {
+      document.getElementById("cardHolderDisplay").textContent = cardData.cardHolder;
+      document.getElementById("cardNumberDisplay").textContent = cardData.cardNumber;
+      document.getElementById("expiryDateDisplay").textContent = cardData.expiryDate;
+      document.getElementById("cvvDisplay").textContent = cardData.cvv;
+      document.getElementById("cardPreview").style.display = "block";
+    }
+
+    // Fetch and display all card data
+    window.addEventListener('load', () => {
+      fetch('http://localhost:5000/api/cards')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          data.forEach(card => displayCardData(card));
+        });
+    });
+  </script>
 </body>
 
 </html>
