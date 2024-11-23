@@ -2,41 +2,61 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+
+// Express serveri yaratmaq
 const app = express();
+const port = 3001;
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // JSON verilənlərini oxumaq üçün
 
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/bankCardDB', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(err));
+// MongoDB bağlantısı qurmaq
+mongoose.connect('mongodb://localhost:27017/cardDB', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB ilə əlaqə quruldu'))
+    .catch(err => console.log(err));
 
-// Mongoose Schema
+// Kart məlumatlarının modelini yaratmaq
 const cardSchema = new mongoose.Schema({
-  cardHolder: String,
-  cardNumber: String,
-  expiryDate: String,
-  cvv: String
+    cardHolder: String,
+    cardNumber: String,
+    expiryDate: String,
+    cvv: String
 });
 
 const Card = mongoose.model('Card', cardSchema);
 
-// API Routes
-app.post('/api/cards', (req, res) => {
-  const newCard = new Card(req.body);
-  newCard.save()
-    .then(() => res.status(201).send("Card added successfully"))
-    .catch(err => res.status(400).send(err));
+// Kart məlumatlarını qəbul etmək üçün POST endpoint
+app.post('/api/saveCard', async (req, res) => {
+    const { cardHolder, cardNumber, expiryDate, cvv } = req.body;
+
+    // Yeni kart məlumatını verilənlər bazasına əlavə et
+    const newCard = new Card({
+        cardHolder,
+        cardNumber,
+        expiryDate,
+        cvv
+    });
+
+    try {
+        await newCard.save();  // Məlumatı bazaya əlavə et
+        res.status(200).json({ message: 'Data saved successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error saving data' });
+    }
 });
 
-app.get('/api/cards', (req, res) => {
-  Card.find()
-    .then(cards => res.json(cards))
-    .catch(err => res.status(400).send(err));
+// Məlumatları əldə etmək üçün GET endpoint
+app.get('/api/getCards', async (req, res) => {
+    try {
+        const cards = await Card.find(); // Verilənlər bazasından bütün kart məlumatlarını götür
+        res.status(200).json(cards);
+    } catch (err) {
+        res.status(500).json({ message: 'Error retrieving data' });
+    }
 });
 
-// Start server
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Serveri işə salmaq
+app.listen(port, () => {
+    console.log(`Server çalışır http://localhost:${port}`);
+});

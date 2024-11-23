@@ -4,75 +4,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bank Card</title>
+  <title>Bank Card Information</title>
   <link rel="stylesheet" href="assets/css/card.css">
   <script defer src="./assets/js/card.js"></script>
   <script defer src="./assets/js/server.js"></script>
 </head>
 
 <body>
-  <div>
-    <h1>Card Details</h1>
+  <section>
+    <h1>Bank Card Information</h1>
     <form id="cardForm">
-      <input type="text" id="cardHolder" placeholder="Card Holder" required>
-      <input type="text" id="cardNumber" placeholder="Card Number" maxlength="19" required>
-      <input type="text" id="expiryDate" placeholder="Expiry Date (MM/YY)" maxlength="5" required>
-      <input type="text" id="cvv" placeholder="CVV" maxlength="3" required>
+      <label for="cardHolder">Card Holder</label>
+      <input type="text" id="cardHolder" name="cardHolder" required><br><br>
+
+      <label for="cardNumber">Card Number</label>
+      <input type="text" id="cardNumber" name="cardNumber" required><br><br>
+
+      <label for="expiryDate">Expiry Date (MM/YY)</label>
+      <input type="text" id="expiryDate" name="expiryDate" required><br><br>
+
+      <label for="cvv">CVV</label>
+      <input type="text" id="cvv" name="cvv" required><br><br>
+
       <button type="submit">Submit</button>
     </form>
-    <div id="cardPreview" style="display:none;">
-      <h2>Card Preview</h2>
-      <p><strong>Card Holder:</strong> <span id="cardHolderDisplay"></span></p>
-      <p><strong>Card Number:</strong> <span id="cardNumberDisplay"></span></p>
-      <p><strong>Expiry Date:</strong> <span id="expiryDateDisplay"></span></p>
-      <p><strong>CVV:</strong> <span id="cvvDisplay"></span></p>
-    </div>
-  </div>
 
+    <h2>Submitted Cards</h2>
+    <ul id="cardsList"></ul>
+
+  </section>
   <script>
-    document.getElementById("cardForm").addEventListener("submit", function (event) {
-      event.preventDefault();
+    const form = document.getElementById('cardForm');
+    const cardsList = document.getElementById('cardsList');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // Formun yenidən göndərilməsini maneə törədin
+
+      // Form məlumatlarını əldə edin
+      const cardHolder = document.getElementById('cardHolder').value;
+      const cardNumber = document.getElementById('cardNumber').value;
+      const expiryDate = document.getElementById('expiryDate').value;
+      const cvv = document.getElementById('cvv').value;
 
       const cardData = {
-        cardHolder: document.getElementById("cardHolder").value,
-        cardNumber: document.getElementById("cardNumber").value,
-        expiryDate: document.getElementById("expiryDate").value,
-        cvv: document.getElementById("cvv").value
+        cardHolder,
+        cardNumber,
+        expiryDate,
+        cvv
       };
 
-      // Send data to the backend API
-      fetch('http://localhost:5000/api/cards', {
+      // Backend API-yə POST sorğusu göndərin
+      const response = await fetch('http://localhost:3001/api/saveCard', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(cardData)
-      })
-        .then(response => response.json())
-        .then(data => {
-          alert("Card data saved!");
-          displayCardData(cardData); // Display the card data
-        })
-        .catch(error => console.error('Error:', error));
+      });
+
+      const data = await response.json();
+      alert(data.message);  // Məlumat göndərildikdən sonra bildiriş göstərmək
+      fetchCards();  // Məlumatlar göndərildikdən sonra kartları yenidən yükləyin
     });
 
-    function displayCardData(cardData) {
-      document.getElementById("cardHolderDisplay").textContent = cardData.cardHolder;
-      document.getElementById("cardNumberDisplay").textContent = cardData.cardNumber;
-      document.getElementById("expiryDateDisplay").textContent = cardData.expiryDate;
-      document.getElementById("cvvDisplay").textContent = cardData.cvv;
-      document.getElementById("cardPreview").style.display = "block";
+    // Backend-dən kartları çəkmək və göstərmək
+    async function fetchCards() {
+      const response = await fetch('http://localhost:3001/api/getCards');
+      const cards = await response.json();
+
+      // Kartları ekranda göstərin
+      cardsList.innerHTML = '';
+      cards.forEach(card => {
+        const li = document.createElement('li');
+        li.textContent = `${card.cardHolder} - ${card.cardNumber} - ${card.expiryDate}`;
+        cardsList.appendChild(li);
+      });
     }
 
-    // Fetch and display all card data
-    window.addEventListener('load', () => {
-      fetch('http://localhost:5000/api/cards')
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          data.forEach(card => displayCardData(card));
-        });
-    });
+    // Sayfa yükləndikdə kartları çək
+    fetchCards();
   </script>
 </body>
 
