@@ -1,0 +1,107 @@
+/* Bütün elementlərə sıfır margin və padding əlavə et */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Sayfanın ümumi görünüşü */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Form konteyneri */
+form {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Başlıq */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+/* Etiketler (label) üçün stil */
+label {
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #333;
+    display: block;
+}
+
+/* İstifadəçi girişləri (input) üçün stil */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s;
+}
+
+/* İstifadəçi inputuna fokuslananda (focus) stil */
+input:focus {
+    border-color: #007BFF;
+    outline: none;
+    background-color: #fff;
+}
+
+/* Düymə (button) üçün stil */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007BFF;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Düyməyə hover edildikdə rəng dəyişməsi */
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Xəbərdarlıq (alert) mesajı üçün stil (gizli olacaq) */
+.alert {
+    display: none;
+    padding: 10px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* İstifadəçi məlumatları daxil etdikdən sonra formdan sonra məlumatın vizual göstərilməsi */
+form .json-output {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+}

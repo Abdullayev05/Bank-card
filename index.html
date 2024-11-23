@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kart Məlumatlarını Daxil Et</title>
+  <link rel="stylesheet" href="assets/css/card.css"> <!-- CSS Faylını əlavə et -->
+</head>
+
+<body>
+
+  <section>
+    <h1>Kart Məlumatlarını Daxil Et</h1>
+
+    <!-- Kart məlumatları daxil etmək üçün form -->
+    <form id="cardForm">
+      <label for="cardHolder">Kart Sahibinin Adı:</label>
+      <input type="text" id="cardHolder" required placeholder="Kart Sahibinin Adı" /><br><br>
+
+      <label for="cardNumber">Kart Nömrəsi:</label>
+      <input type="text" id="cardNumber" required placeholder="Kart Nömrəsi (16 simvol)" maxlength="19" /><br><br>
+
+      <label for="expiryDate">Son İstifadə Tarixi:</label>
+      <input type="text" id="expiryDate" required placeholder="MM/YY" maxlength="5" pattern="\d{2}/\d{2}" /><br><br>
+
+      <label for="cvv">CVV:</label>
+      <input type="text" id="cvv" required placeholder="CVV" maxlength="3" /><br><br>
+
+      <button type="submit">Kart Məlumatlarını Göndər</button>
+    </form>
+
+  </section>
+  <script defer src="./assets/js/card.js"></script> <!-- JavaScript Faylını əlavə et -->
+
+</body>
+
+</html>
