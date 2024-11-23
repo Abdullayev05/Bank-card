@@ -81,3 +81,16 @@ document.getElementById("expiryDate").addEventListener("input", function (event)
 
     event.target.value = value.substring(0, 2) + (value.length >= 2 ? '/' : '') + value.substring(2, 4);
 });
+
+// CVV kodunu yalnız 3 rəqəmlə məhdudlaşdırmaq
+document.getElementById("cvv").addEventListener("input", function (event) {
+    let value = event.target.value.replace(/\D/g, ''); // Yalnız rəqəmləri saxla
+
+    // 3 rəqəmdən çox yazılmasına icazə vermə
+    if (value.length > 3) {
+        value = value.substring(0, 3); // Əgər 3 rəqəmdən çox daxil edilibsə, yalnız ilk 3-ü qalacaq
+    }
+
+    // CVV daxil edilərkən dəyişiklikləri göstər
+    event.target.value = value;
+});
