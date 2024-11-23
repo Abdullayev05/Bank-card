@@ -31,8 +31,8 @@
 
     <h2>Submitted Cards</h2>
     <ul id="cardsList"></ul>
-
   </section>
+
   <script>
     const form = document.getElementById('cardForm');
     const cardsList = document.getElementById('cardsList');
@@ -69,20 +69,26 @@
 
     // Backend-dən kartları çəkmək və göstərmək
     async function fetchCards() {
-      const response = await fetch('http://localhost:3001/api/getCards');
-      const cards = await response.json();
+      try {
+        const response = await fetch('http://localhost:3001/api/getCards'); // Backend serverindən məlumatları alır
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const cards = await response.json();  // JSON formatında məlumatları oxuyur
 
-      // Kartları ekranda göstərin
-      cardsList.innerHTML = '';
-      cards.forEach(card => {
-        const li = document.createElement('li');
-        li.textContent = `${card.cardHolder} - ${card.cardNumber} - ${card.expiryDate}`;
-        cardsList.appendChild(li);
-      });
+        // Məlumatları ekranda göstərin
+        cardsList.innerHTML = '';  // Mövcud kartları sil
+        cards.forEach(card => {
+          const li = document.createElement('li');
+          li.textContent = `${card.cardHolder} - ${card.cardNumber} - ${card.expiryDate}`;
+          cardsList.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Fetch error:', error); // Hata olarsa konsola yazdır
+      }
     }
 
     // Sayfa yükləndikdə kartları çək
-    fetchCards();
+    fetchCards();  // Sayfa yükləndikdən sonra kartları dərhal çəkin
   </script>
 </body>
 
